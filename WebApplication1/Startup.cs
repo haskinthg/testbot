@@ -19,8 +19,9 @@ namespace WebApplication1
             services.AddControllers().AddNewtonsoftJson();
             services.AddEntityFrameworkSqlite().AddDbContext<DataContext>();
             services.AddSingleton<Bot>();
+            services.AddSingleton<IUserService, UserService>();
+            services.AddSingleton<IExecutor, Executor>();
             services.AddSingleton<BasisCommand, StartCommand>();
-            services.AddSingleton<UserService>();
         }
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env, IServiceProvider serviceProvider)
         {

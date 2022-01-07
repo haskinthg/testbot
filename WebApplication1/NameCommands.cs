@@ -2,6 +2,6 @@
 {
     public class NameCommands
     {
-        public const string StartCommand = "start";
+        public const string StartCommand = "/start";
     }
 }

@@ -4,7 +4,8 @@ using Telegram.Bot;
 using Telegram.Bot.Types;
 using Telegram.Bot.Types.Enums;
 using WebApplication1.BotService;
-//using WebApplication1.Commands;
+using WebApplication1.Commands;
+
 
 namespace WebApplication1.Controllers
 {
@@ -12,32 +13,29 @@ namespace WebApplication1.Controllers
     [Route(template: "api/message/update")]
     public class MessageController : ControllerBase
     {
-        private readonly TelegramBotClient _botClient;
-        //private readonly DataContext _dataContext = new DataContext();
-        
+        private IExecutor _executor;
 
-        public MessageController(Bot bot)
+        public MessageController(IExecutor executor)
         {
-            _botClient = bot.GetBot().Result;
+            _executor = executor;
             
-
         }
 
         [HttpPost]
         public async Task<IActionResult> Update([FromBody] object update)
         {
             var upd = JsonConvert.DeserializeObject<Update>(update.ToString());
-            var chat = upd?.Message?.Chat;
 
-            if (chat == null)
+            if (upd?.Message?.Chat == null)
                 return Ok();
-
-            
-
-            //await command.ExecuteAsyns(upd);
-
-            await _botClient.SendTextMessageAsync(chat.Id, "kkkk", ParseMode.Markdown);
-
+            try
+            {
+                await _executor.Execute(upd);
+            }
+            catch (Exception ex)
+            {
+                return Ok();
+            }
 
             return Ok();
         }

@@ -9,11 +9,12 @@ namespace WebApplication1.Commands
     public class StartCommand : BasisCommand
     {
         private readonly TelegramBotClient botClient;
-        private readonly UserService userService;
+        private readonly IUserService _userService;
 
-        public StartCommand(Bot bot)
+        public StartCommand(Bot bot, IUserService service)
         {
             botClient = bot.GetBot().Result;
+            _userService = service;
         }
 
         public override string Name => NameCommands.StartCommand;
@@ -21,9 +22,10 @@ namespace WebApplication1.Commands
 
         public override async Task ExecuteAsyns(Update update)
         {
-            var appUser = await userService.GetOrAdd(update);
+            var appUser = await _userService.GetOrAdd(update);
+
             await botClient.SendStickerAsync(appUser.Id,
-                "CAACAgIAAxkBAAIKQWHUrPR_Y1RRxYzXm322rWdXYCXOAAI4CwACTuSZSzKxR9LZT4zQIwQ");
+                "стартовая команда");
         }
     }
 }
